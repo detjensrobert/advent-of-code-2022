@@ -13,3 +13,7 @@ puts "Part 1: max calories: #{input.map(&:sum).max}"
 #
 # What is the sum of the top three elves calories?
 puts "Part 2: Sum of top three: #{input.map(&:sum).sort[-3..].sum}"
+
+# golfed: 110 chars
+input=ARGF.read.split("\n\n").map{|e|e.split("\n").map &:to_i}.map(&:sum).sort
+puts input.last,input[-3..].sum
