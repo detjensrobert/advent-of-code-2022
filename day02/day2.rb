@@ -34,7 +34,7 @@ score = moves.each_slice(2).map do |op, me|
   end
 end
 
-puts "Part 1:\t#{score.sum}"
+puts "Part 1: #{score.sum}"
 
 # PART 2
 #
@@ -61,4 +61,4 @@ score = moves.each_slice(2).map do |op, outcome|
   end
 end
 
-puts "Part 2:\t#{score.sum}"
+puts "Part 2: #{score.sum}"

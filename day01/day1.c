@@ -44,19 +44,18 @@ int **parse_inventories(char *filename) {
 
     // expand input array if new elf
     if (value == 0) {
-      inventories = reallocarray(inventories, ++invs_size, sizeof(int *));
+      inventories = realloc(inventories, ++invs_size * sizeof(int *));
       current_inv_size = 0;
       continue;
     }
 
     // expand per-elf inventory
-    inventories[invs_size - 1] = reallocarray(inventories[invs_size - 1],
-                                              ++current_inv_size, sizeof(int));
+    inventories[invs_size - 1] = realloc(inventories[invs_size - 1], ++current_inv_size * sizeof(int));
     inventories[invs_size - 1][current_inv_size - 1] = value;
   }
 
   // make sure null terminator at end
-  inventories = reallocarray(inventories, ++invs_size, sizeof(int *));
+  inventories = realloc(inventories, ++invs_size * sizeof(int *));
   inventories[invs_size - 1] = NULL;
 
   return inventories;
@@ -65,7 +64,7 @@ int **parse_inventories(char *filename) {
 void print_inventories(int **invs) {
   // for each elf
   for (int i = 0; invs[i] != NULL; i++) {
-    printf("Elf %i:\n", i);
+    printf("Elf %i:\n", i + 1);
 
     // for each item in their inv
     for (int j = 0; invs[i][j] != 0; j++) {
