@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # Input is range pairs
 input = ARGF.read.split.map do |line| # split input into lines

@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 # Input is elf rucksacks with two compartments
 sacks = ARGF.read.split.map(&:chars)
@@ -7,7 +8,7 @@ PRIORITIES = ['_'] + ('a'..'z').to_a + ('A'..'Z').to_a
 # PART 1
 #
 # What is the priorities sum of items in both halves of each rucksack?
-puts sacks.map { |s| s.each_slice(s.size / 2 ).to_a }
+puts sacks.map { |s| s.each_slice(s.size / 2).to_a }
   .map { |front, back| (front & back).first }
   .map { |common| PRIORITIES.index(common) }.sum
 
