@@ -13,7 +13,7 @@ end
 # How many ranges fully contain the other?
 puts input.count { |a, b| a.cover?(b) || b.cover?(a) }
 
-# PART 1
+# PART 2
 #
 # How many ranges overlap at all?
 class Range
