@@ -19,3 +19,4 @@ end
 stream.each.with_index(14) do |e, i|
   break puts i if stream[(i-14) .. i].tally.values.all?(1)
 end
+# TODO this doesnt work for part 2 :/
