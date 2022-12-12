@@ -29,33 +29,27 @@ entries.each do |cmd, *output|
   end
 end
 
+# remove nested root node from parsing
+dirtree = dirtree["/"]
+
+# puts dirtree.to_yaml
+
 # PART 1
 #
 # Find all of the directories with a total size of at most 100_000.
 # What is the sum of the total sizes of those directories?
 
-# aggregate sizes to special entry
-def du!(dir)
-  return dir unless dir.is_a?(Hash)
-  dir["_size"] = dir.values.map { |e| e.is_a?(Hash) ? du!(e) : e }.sum
-end
-du! dirtree["/"]
-
 # find all directory sizes
 def sizes(dir)
-  [
-    # recurse into subdirs (hash entries)
-    *dir.values
-      .filter { |e| e.is_a? Hash }
-      .map { |d| sizes(d) },
-    # add current size
-    dir["_size"]
-  ].flatten.compact
+  # recurse into subdirs (hash entries)
+  subdirs = dir.values.filter { |e| e.is_a? Hash }.map { |d| sizes(d) }.flatten
+  # own size is subdirs + sum of direct files
+  own_size = (subdirs + dir.values.filter { |e| e.is_a? Integer }).sum
+
+  subdirs + [own_size]
 end
 
 puts sizes(dirtree).sort.filter { |s| s < 100_000 }.sum
-
-# puts dirtree.to_yaml
 
 # PART 2
 #
@@ -64,4 +58,7 @@ puts sizes(dirtree).sort.filter { |s| s < 100_000 }.sum
 
 # total - used + x > free
 # 70M - /.size + x > 30M
-puts sizes(dirtree).filter {|s| 70_000_000 - dirtree["/"]["_size"] + s > 30_000_000 }.sort.first
+free_space = 70_000_000 - sizes(dirtree).max
+puts sizes(dirtree).filter {|s| free_space + s > 30_000_000 }.sort
+
+# puts sizes(dirtree).sort

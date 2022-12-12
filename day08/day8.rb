@@ -19,19 +19,21 @@ map = ARGF.read.split("\n").map { |l| l.chars.map(&:to_i) }
 
 # use a class instead of a int primitive to avoid primitive singleton dedup
 class Node
-  attr_accessor :height, :label
+  attr_accessor :height, :label, :x, :y
 
-  def initialize(height, label = 'Tree')
+  def initialize(height, xpos = nil, ypos = nil, label = 'Tree')
     @height = height
     @label = label
+    @x = xpos
+    @y = ypos
   end
 
   def to_s
-    "<#{@label}##{object_id}: #{@height}>"
+    "<#{@label}##{x},#{y}: #{@height}>"
   end
 end
 
-trees = Matrix[*map.map { |r| r.map { |h| Node.new(h) } }]
+trees = Matrix[*map.map.with_index { |r, i| r.map.with_index { |h, j| Node.new(h, i, j) } }]
 
 puts "matrix built"
 
@@ -42,7 +44,7 @@ puts "matrix built"
 # build visiblity graph from map
 visg = RGL::DirectedAdjacencyGraph.new
 
-outside = Node.new(-1, 'outside')
+outside = Node.new(-1, nil, nil, 'outside')
 # trees.map { |t| visg.add_vertex(t) }
 
 # add all outside trees as visible
@@ -79,5 +81,7 @@ dirs = (trees.row_vectors[1..-2] + trees.column_vectors[1..-2])
 end
 
 puts "graph built"
+
+visg.write_to_graphic_file('png')
 
 puts "Part 1: #{visg.count - 1}" # don't count Outside node
