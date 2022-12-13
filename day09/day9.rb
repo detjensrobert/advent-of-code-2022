@@ -64,17 +64,17 @@ DIRS = {
 tail = head = Vector[0, 0]
 positions = Set[tail]
 
-moves.each do |dir, dist|
+moves.each do |direction, dist|
   dist.times do
-    head += DIRS[dir]
+    head += DIRS[direction]
     delta = head - tail
 
-    # far enough away?
-    unless delta in [(-1..1), (-1..1)]
-      # catch up, one king's move at a time
-      tail += Vector[ *delta.map { |c| c.clamp(-1, 1) } ]
-      positions << tail
-    end
+    # not far enough away?
+    next if delta in [(-1..1), (-1..1)]
+
+    # catch up, one king's move at a time
+    tail += Vector[ *delta.map { |c| c.clamp(-1, 1) } ]
+    positions << tail
   end
 end
 
@@ -91,9 +91,9 @@ head = Vector[0, 0]
 tails = [Vector[0,0]] * 9
 positions = Set[tails.last]
 
-moves.each do |dir, dist|
+moves.each do |direction, dist|
   dist.times do
-    head += DIRS[dir]
+    head += DIRS[direction]
 
     # cant use map here since we need to change values during iterations
     tails.each_with_index do |t, i|
