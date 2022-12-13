@@ -19,7 +19,6 @@ FileUtils.touch("test")
 `aoc download --day #{day} --input-only`
 
 __END__
-
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
@@ -31,3 +30,13 @@ end
 
 # Input is
 input = ARGF.read.split("\n")
+
+# PART 1
+#
+#
+
+
+
+# PART 2
+#
+#
