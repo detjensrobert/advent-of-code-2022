@@ -64,29 +64,17 @@ DIRS = {
 tail = head = Vector[0, 0]
 positions = Set[tail]
 
-# print_map(positions, head, tail)
-
 moves.each do |dir, dist|
-  # puts "moving #{dir} x#{dist}"
   dist.times do
-    # puts "moving #{dir}"
     head += DIRS[dir]
     delta = head - tail
-
-    # puts " pos delta: #{delta}"
 
     # far enough away?
     unless delta in [(-1..1), (-1..1)]
       # catch up, one king's move at a time
       tail += Vector[ *delta.map { |c| c.clamp(-1, 1) } ]
       positions << tail
-      # puts "  catching up"
-      # puts "    clamped delta: #{delta.map { |c| c.clamp(-1, 1) }}"
-      # puts "    new tail pos: #{tail}"
     end
-
-    # print_map(positions, head, [tail])
-    # sleep 0.25
   end
 end
 
@@ -103,17 +91,13 @@ head = Vector[0, 0]
 tails = [Vector[0,0]] * 9
 positions = Set[tails.last]
 
-# print_map(positions, head, tail)
-
 moves.each do |dir, dist|
-  # puts "moving #{dir} x#{dist}"
   dist.times do
     head += DIRS[dir]
 
-    # cant use map here since we need to change values during
+    # cant use map here since we need to change values during iterations
     tails.each_with_index do |t, i|
       prev = i == 0 ? head : tails[i - 1]
-
       delta = prev - t
 
       # not far enough away?
@@ -127,5 +111,7 @@ moves.each do |dir, dist|
     positions << tails.last
   end
 end
+
+# print_map(positions, head, tail)
 
 puts "Part 2: #{positions.size} visited spots"
