@@ -26,9 +26,9 @@ class Vector
   def deconstruct; to_a; end
 end
 
-def print_map(visited, head, tail)
+def print_map(visited, head, tails)
   # find coordinate dimensions
-  dims_x, dims_y = (visited + [head, tail].compact).to_a
+  dims_x, dims_y = (visited + [head] + tails).to_a
     .transpose.map{ |dim| Vector[*dim.minmax.sort] }
 
   # adjust all coordinates to be positive
@@ -38,7 +38,7 @@ def print_map(visited, head, tail)
   dims_y += adj
   visited_adj = visited.map { |v| v + adj }
   head += adj
-  tail += adj
+  tails_adj = tails.map { |t| t + adj }
 
   # create map matrix
   map = Matrix.build(dims_x[1] + 1, dims_y[1] + 1) { ' ' }
@@ -46,7 +46,7 @@ def print_map(visited, head, tail)
   # add points to map
   visited_adj.each { |v| map[*v.to_a] = ' '.on_light_black }
   map[0, 0] = 's'.white.on_light_black
-  map[*tail.to_a] = 'T'.on_light_red
+  tails_adj.each_with_index { |t, i| map[*t.to_a] = (i+1).to_s.red.on_light_black }
   map[*head.to_a] = 'H'.on_light_blue
 
   # print matrix
@@ -67,6 +67,7 @@ positions = Set[tail]
 # print_map(positions, head, tail)
 
 moves.each do |dir, dist|
+  # puts "moving #{dir} x#{dist}"
   dist.times do
     # puts "moving #{dir}"
     head += DIRS[dir]
@@ -74,10 +75,9 @@ moves.each do |dir, dist|
 
     # puts " pos delta: #{delta}"
 
-    case delta
-    in [(-1..1), (-1..1)] # not far enough away
-      # puts "  no movement"
-    else # catch up, one king's move at a time
+    # far enough away?
+    unless delta in [(-1..1), (-1..1)]
+      # catch up, one king's move at a time
       tail += Vector[ *delta.map { |c| c.clamp(-1, 1) } ]
       positions << tail
       # puts "  catching up"
@@ -85,11 +85,47 @@ moves.each do |dir, dist|
       # puts "    new tail pos: #{tail}"
     end
 
-    # print_map(positions, head, tail)
+    # print_map(positions, head, [tail])
     # sleep 0.25
   end
 end
 
-print_map(positions, head, tail)
+# print_map(positions, head, [tail])
 
 puts "Part 1: #{positions.size} visited spots"
+
+# PART 2
+#
+# Now there are 10 rope knots that all follow the previous one.
+# How many positions does the rope tail (last knot) visit at least once?
+
+head = Vector[0, 0]
+tails = [Vector[0,0]] * 9
+positions = Set[tails.last]
+
+# print_map(positions, head, tail)
+
+moves.each do |dir, dist|
+  # puts "moving #{dir} x#{dist}"
+  dist.times do
+    head += DIRS[dir]
+
+    # cant use map here since we need to change values during
+    tails.each_with_index do |t, i|
+      prev = i == 0 ? head : tails[i - 1]
+
+      delta = prev - t
+
+      # not far enough away?
+      next if delta in [(-1..1), (-1..1)]
+
+      # catch up, one king's move at a time
+      # move each tail to catch up with the one before it
+      tails[i] = t + Vector[ *delta.map { |c| c.clamp(-1, 1) } ]
+    end
+
+    positions << tails.last
+  end
+end
+
+puts "Part 2: #{positions.size} visited spots"
