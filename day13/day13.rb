@@ -40,4 +40,11 @@ puts input.map {|a, b| a <=> b } # compare each pair
 
 # PART 2
 #
-#
+# Sort all the packets, including an additional "divider pair."
+# What is the product of the sorted indexes of the divider pair?
+
+input << [[[2]], [[6]]]
+
+sorted = input.flatten(1).sort
+
+puts (sorted.find_index([[2]]) + 1) * (sorted.find_index([[6]]) + 1)
