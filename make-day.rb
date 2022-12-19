@@ -16,7 +16,9 @@ Dir.chdir(padded)
 
 File.write("day#{day}.rb", DATA.read)
 FileUtils.touch("test")
-`aoc download --day #{day} --input-only`
+
+# download pussle input and problem doc
+`aoc download --day #{day}`
 
 __END__
 #!/usr/bin/env ruby
